@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navigation from './Navigation';
-import Footer from './Footer';
+import Footer from '../components/Footer';
+
+// Removed Home component to avoid multiple default exports
+
 
 const Layout = () => {
   const location = useLocation();

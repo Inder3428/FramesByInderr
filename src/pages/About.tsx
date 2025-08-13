@@ -60,7 +60,7 @@ const About = () => {
       >
         <div className="absolute inset-0">
           <img 
-            src="/Public/Images/Potraits/IMG_2756.jpg" 
+            src="https://ik.imagekit.io/2z1l6hi16/Potraits/BG.jpg" 
             alt="Photographer"
             className="w-full h-full object-cover opacity-80"
           />
