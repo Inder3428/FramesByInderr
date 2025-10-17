@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Grid, Camera, ZoomIn, ZoomOut, Maximize2, Minimize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Grid, Camera, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 
 interface Image {
   id: string;

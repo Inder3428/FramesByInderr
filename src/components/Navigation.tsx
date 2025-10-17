@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-const links = [
+  const links = [
     { path: '/', label: 'Home' },
     { path: '/work', label: 'Work' },
     { path: '/about', label: 'About' },
@@ -26,6 +26,14 @@ const links = [
     };
   }, []);
 
+  // Helper function to check if link is active
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -37,31 +45,47 @@ const links = [
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="text-xl md:text-2xl font-thin tracking-[0.3em] cursor-pointer relative z-[101]"
-        >
-          <Link to="/">INDERPREET</Link>
-        </motion.div>
+        <Link to="/">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="text-xl md:text-2xl font-thin tracking-[0.3em] cursor-pointer relative z-[101]"
+          >
+            INDERPREET
+          </motion.div>
+        </Link>
 
         {/* Desktop Links */}
         <div className="hidden md:flex gap-6 md:gap-10">
           {links.map((item) => (
-            <motion.a
+            <Link
               key={item.label}
-              href={item.path}
-              whileHover={{ opacity: 0.7 }}
-              whileTap={{ scale: 0.95 }}
-              className={`text-[10px] md:text-xs font-light tracking-[0.2em] transition-all duration-300 relative z-[101] ${
-                location.hash === item.path.replace('/#', '#')
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
+              to={item.path}
             >
-              {item.label}
-            </motion.a>
+              <motion.div
+                whileHover={{ opacity: 0.7 }}
+                whileTap={{ scale: 0.95 }}
+                className={`text-[10px] md:text-xs font-light tracking-[0.2em] transition-all duration-300 relative z-[101] ${
+                  isActive(item.path)
+                    ? 'text-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {item.label}
+              </motion.div>
+            </Link>
           ))}
         </div>
+
+        {/* Mobile Menu Button */}
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          className="md:hidden flex flex-col gap-1.5 relative z-[101]"
+          aria-label="Menu"
+        >
+          <span className="w-6 h-0.5 bg-white"></span>
+          <span className="w-6 h-0.5 bg-white"></span>
+          <span className="w-6 h-0.5 bg-white"></span>
+        </motion.button>
       </div>
     </motion.nav>
   );
