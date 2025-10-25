@@ -8,7 +8,7 @@ import Lenis from '@studio-freight/lenis';
 import { ZoomParallax } from '@/components/ui/zoom-parallax';
 
 // ===========================================================
-// 📸 TYPE
+// 📸 IMAGE TYPE
 // ===========================================================
 interface Image {
   id: string;
@@ -20,7 +20,7 @@ interface Image {
 }
 
 // ===========================================================
-// 📷 IMAGE DATA
+// 🖼️ IMAGE COLLECTIONS
 // ===========================================================
 const portraitImages: Image[] = [
   { id: '1', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(1).jpg', category: 'portraits', subcategory: 'outdoor', title: 'Pakistani Tradition', year: '2024' },
@@ -42,27 +42,19 @@ const streetImages: Image[] = [
   { id: '16', url: 'https://ik.imagekit.io/2z1l6hi16/Street/Street%20(8).jpg', category: 'street', subcategory: 'street photography', title: 'Evening Shadows', year: '2024' },
 ];
 
-// 💍 Future categories (ready to plug in)
-/*
-const weddingImages: Image[] = [];
-const eventsImages: Image[] = [];
-*/
-
 const images: Record<string, Image[]> = {
   portraits: portraitImages,
   street: streetImages,
-  // wedding: weddingImages,
-  // events: eventsImages,
 };
 
 // ===========================================================
-// ⚙️ HELPERS
+// ⚙️ OPTIMIZATION HELPER
 // ===========================================================
 const optimizeImageUrl = (url: string, width = 900) =>
   url.includes('ik.imagekit.io') ? `${url}?tr=w-${width},q-90,f-webp,pr-true` : url;
 
 // ===========================================================
-// 🌆 COMPONENT
+// 🌌 COMPONENT
 // ===========================================================
 export default function PortfolioGallery() {
   const { category: routeCategory } = useParams<{ category?: string }>();
@@ -71,18 +63,23 @@ export default function PortfolioGallery() {
   const [index, setIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   const [showUI, setShowUI] = useState(true);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // 🚀 Auto-switch category via route
+  // ===========================================================
+  // 🌀 PAGE PRELOADER
+  // ===========================================================
   useEffect(() => {
-    if (routeCategory && Object.keys(images).includes(routeCategory))
-      setCategory(routeCategory as any);
-  }, [routeCategory]);
+    const timer = setTimeout(() => setLoading(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // ✨ Lenis smooth scrolling (throttled)
+  // ===========================================================
+  // 🧠 LENIS SMOOTH SCROLLING
+  // ===========================================================
   useEffect(() => {
-    const lenis = new Lenis({ lerp: 0.1 });
+    const lenis = new Lenis({ lerp: 0.08 });
     let frame: number;
     const raf = (t: number) => {
       lenis.raf(t);
@@ -92,26 +89,23 @@ export default function PortfolioGallery() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // 🎹 Keyboard controls
+  // ===========================================================
+  // 🔄 CATEGORY HANDLER
+  // ===========================================================
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (!selected) return;
-      if (e.key === 'Escape') setSelected(null);
-      if (e.key === 'ArrowLeft') setIndex((i) => Math.max(i - 1, 0));
-      if (e.key === 'ArrowRight') setIndex((i) => Math.min(i + 1, filteredImages.length - 1));
-      if (e.key.toLowerCase() === 'z' || e.key === ' ') setZoomed((z) => !z);
-      if (e.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [selected]);
+    if (routeCategory && Object.keys(images).includes(routeCategory))
+      setCategory(routeCategory as any);
+  }, [routeCategory]);
 
-  // Auto-hide fullscreen controls after 3 s inactivity
+  // ===========================================================
+  // 🧭 HIDE CONTROLS TIMER
+  // ===========================================================
   const resetHideTimer = useCallback(() => {
     setShowUI(true);
     if (hideTimer.current) clearTimeout(hideTimer.current);
     hideTimer.current = setTimeout(() => setShowUI(false), 3000);
   }, []);
+
   useEffect(() => {
     if (selected) {
       window.addEventListener('mousemove', resetHideTimer);
@@ -125,6 +119,9 @@ export default function PortfolioGallery() {
     };
   }, [selected]);
 
+  // ===========================================================
+  // 🎞️ FILTER + SCROLL
+  // ===========================================================
   const filteredImages = useMemo(() => images[category], [category]);
   const parallaxImages = useMemo(
     () => filteredImages.slice(0, 7).map((img) => ({ src: optimizeImageUrl(img.url, 1200), alt: img.title })),
@@ -136,15 +133,37 @@ export default function PortfolioGallery() {
   const selectedImage = selected ? filteredImages[index] : null;
 
   const { scrollYProgress } = useScroll({ target: containerRef });
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
 
   // ===========================================================
-  // 🎨 RENDER
+  // 🧩 PRELOADER
+  // ===========================================================
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1.1, opacity: 1 }}
+          transition={{ duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
+          className="text-white text-lg sm:text-2xl font-light tracking-wider text-center"
+        >
+          Loading your experience...
+        </motion.div>
+      </div>
+    );
+  }
+
+  // ===========================================================
+  // 🌆 MAIN RENDER
   // ===========================================================
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-black text-white">
-      {/* 🌌 Zoom Parallax Hero */}
-      <ZoomParallax images={parallaxImages} />
+    <div ref={containerRef} className="relative min-h-screen bg-black text-white overflow-x-hidden">
+      {/* 🌌 Zoom Parallax in Container */}
+      <div className="relative z-10">
+        <div className="max-w-screen-xl mx-auto pt-[120px] pb-20 sm:pt-[160px] sm:pb-24 lg:pt-[180px] lg:pb-32 px-4 sm:px-6 lg:px-8">
+          <ZoomParallax images={parallaxImages} />
+        </div>
+      </div>
 
       {/* 🔘 Category Selector */}
       <div className="flex justify-center gap-4 py-6 sticky top-0 bg-black/70 backdrop-blur-md z-20">
@@ -157,6 +176,7 @@ export default function PortfolioGallery() {
               setZoomed(false);
             }}
             whileHover={{ scale: 1.05 }}
+            transition={{ type: 'spring', stiffness: 300 }}
             className={`px-6 py-2 rounded-full font-medium uppercase text-sm transition-all ${
               category === cat
                 ? 'bg-white text-black shadow-lg'
@@ -170,13 +190,15 @@ export default function PortfolioGallery() {
 
       {/* 🖼️ Gallery Grid */}
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 p-4 md:p-10"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 px-4 pt-10 pb-[100px] sm:px-10 sm:pb-[140px]"
         style={{ scale }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
       >
         {filteredImages.map((img, i) => (
           <motion.div
             key={img.id}
             whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.3 }}
             className="relative overflow-hidden rounded-xl cursor-pointer group"
             onClick={() => {
               setSelected(img);
@@ -221,7 +243,6 @@ export default function PortfolioGallery() {
             <AnimatePresence>
               {showUI && (
                 <>
-                  {/* Prev */}
                   <motion.button
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -233,7 +254,6 @@ export default function PortfolioGallery() {
                     <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
                   </motion.button>
 
-                  {/* Next */}
                   <motion.button
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -245,7 +265,6 @@ export default function PortfolioGallery() {
                     <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
                   </motion.button>
 
-                  {/* Close */}
                   <motion.button
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.5 }}
@@ -260,7 +279,6 @@ export default function PortfolioGallery() {
                     <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </motion.button>
 
-                  {/* Info */}
                   <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
