@@ -1,19 +1,107 @@
+// src/pages/Home.tsx
+'use client';
+
 import { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  Camera,
-  Users,
-  Building,
-  Palette,
-  Video,
-  Award,
-  Globe,
-  Sparkles,
-  ArrowRight,
-  ChevronDown,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import * as THREE from "three";
+import gsap from "gsap";
+
+/* ============================================================================
+   ImageKit optimizer
+   - Appends or merges transform query params safely
+   - Defaults target width to 800 for grids / thumbs
+============================================================================ */
+function optimizeImageUrl(url: string, width = 800, quality = 80) {
+  const tr = `tr=w-${width},q-${quality},f-webp,pr-true`;
+  return url.includes("?") ? `${url}&${tr}` : `${url}?${tr}`;
+}
+
+/* ============================================================================
+   Your master image pools (PORTRAITS / STREET / WEDDING)
+   - Pulled from your provided lists
+   - Used everywhere we need images (projects cards, showcase, instagram)
+============================================================================ */
+const PORTRAITS = [
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(13).JPG?updatedAt=1755041766662",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(13).JPG?updatedAt=1755041766662",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(6).jpg?updatedAt=1755041766602",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(12).JPG?updatedAt=1755041766232",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(14).JPG?updatedAt=1755041765463",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(1).jpg?updatedAt=1755041765063",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(7).jpg?updatedAt=1755041762881",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(2).jpg?updatedAt=1755041762003",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(4).jpg?updatedAt=1755041761815",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(3).jpg?updatedAt=1755041761193",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(18).JPG?updatedAt=1755041757640",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(19).JPG?updatedAt=1755041757046",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(10).jpg?updatedAt=1755041744234",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(9).jpg?updatedAt=1755041744161",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(15).JPG?updatedAt=1755041742386",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(11).jpg?updatedAt=1755041742110",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(17).JPG?updatedAt=1755041738897",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(16).JPG?updatedAt=1755041734475",
+  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(8).jpg?updatedAt=1755041731548",
+];
+
+const STREET = [
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(8).jpg?updatedAt=1755041799679",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(10).jpg?updatedAt=1755041800612",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(12).jpg?updatedAt=1755041801848",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(11).jpg?updatedAt=1755041801629",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(9).jpg?updatedAt=1755041803804",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(13).jpg?updatedAt=1755041802378",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(14).jpg?updatedAt=1755041806834",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(4).JPG?updatedAt=1755041806439",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(5).jpg?updatedAt=1755041811099",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(3).jpg?updatedAt=1755041810912",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(2).jpg?updatedAt=1755041811204",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(6).jpg?updatedAt=1755041811865",
+  "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(7).jpg?updatedAt=1755041812680",
+];
+
+const WEDDING = [
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0143%20copy.jpg?updatedAt=1762193850320",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0195%20copy.jpg?updatedAt=1762193850238",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0100%20copy.jpg?updatedAt=1762193849143",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0092%20copy.jpg?updatedAt=1762193849015",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0104%20copy.jpg?updatedAt=1762193848728",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0119%20copy.jpg?updatedAt=1762193848620",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0252%20copy.jpg?updatedAt=1762193848070",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0249%20copy.jpg?updatedAt=1762193848387",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0103%20copy.jpg?updatedAt=1762193848403",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0637%20copy.jpg?updatedAt=1762193847491",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0102%20copy.jpg?updatedAt=1762193847194",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0274%20copy.jpg?updatedAt=1762193843606",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0021%20copy.jpg?updatedAt=1762193843322",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0519%20copy.jpg?updatedAt=1762193843266",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0617%20copy.jpg?updatedAt=1762193843318",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0631%20copy.jpg?updatedAt=1762193843255",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0264%20copy.jpg?updatedAt=1762193843187",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0513%20copy.jpg?updatedAt=1762193842808",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0504%20copy.jpg?updatedAt=1762193842773",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0254%20copy.jpg?updatedAt=1762193841228",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0500%20copy.jpg?updatedAt=1762193841065",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0264%20aacopy.jpg?updatedAt=1762193840457",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Pre_Engage_0661%20copy.jpg?updatedAt=1762193839896",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0020%20copy.jpg?updatedAt=1762193722627",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0090%20copy.jpg?updatedAt=1762193722158",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0017%20copy.jpg?updatedAt=1762193722038",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0065%20copy.jpg?updatedAt=1762193721707",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0037%20copy.jpg?updatedAt=1762193721748",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0023%20copy.jpg?updatedAt=1762193721137",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0061%20copy.jpg?updatedAt=1762193720831",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0055%20copy.jpg?updatedAt=1762193716429",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0006%20copy.jpg?updatedAt=1762193713947",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0102%20copy.jpg?updatedAt=1762193713893",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0061%20bw.jpg?updatedAt=1762193712713",
+  "https://ik.imagekit.io/2z1l6hi16/New%20Folder/Proposal_0116-Recovered.jpg?updatedAt=1762193712273",
+];
+
+// Helper: shuffle and take N
+const pickRandom = (arr: string[], n: number) =>
+  arr.slice().sort(() => Math.random() - 0.5).slice(0, Math.min(n, arr.length));
 
 /* ============================================================================
    StarBorder – animated shooting-star border
@@ -83,6 +171,9 @@ const Home = () => {
   const contactSectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Showcase track ref for GSAP
+  const showcaseTrackRef = useRef<HTMLDivElement>(null);
+
   // Parallax transforms (guarded by containerRef)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -94,91 +185,42 @@ const Home = () => {
 
   /* ==========================================================================
      Data (memoized so arrays aren't re-created)
+     - Projects thumbnails use YOUR images now (replacing Unsplash)
   ========================================================================== */
   const projects = useMemo(
     () => [
       {
         title: "Portraits",
-        image:
-          "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80",
+        image: optimizeImageUrl(PORTRAITS[0], 1200),
         year: "2024",
         link: "/work/portraits",
       },
       {
         title: "Street",
-        image:
-          "https://images.unsplash.com/photo-1516834611397-8d633eaec5d0?auto=format&fit=crop&q=80",
-        year: "2023",
+        image: optimizeImageUrl(STREET[0], 1200),
+        year: "2024",
         link: "/work/street",
       },
     ],
     []
   );
 
-  const services = useMemo(
-    () => [
-      {
-        icon: Camera,
-        title: "Professional Photography",
-        description: "High-quality photography services for all your needs",
-        features: ["Portrait Sessions", "Product Shoots", "Corporate Photography"],
-      },
-      {
-        icon: Users,
-        title: "Event Coverage",
-        description: "Comprehensive event documentation and storytelling",
-        features: ["Weddings", "Corporate Events", "Private Parties"],
-      },
-      {
-        icon: Building,
-        title: "Commercial Projects",
-        description: "Professional imagery for businesses and brands",
-        features: ["Architecture", "Real Estate", "Interior Design"],
-      },
-      {
-        icon: Palette,
-        title: "Creative Direction",
-        description:
-          "Artistic vision and concept development for unique projects",
-        features: ["Concept Development", "Art Direction", "Styling"],
-      },
-      {
-        icon: Video,
-        title: "Video Production",
-        description: "Cinematic storytelling through motion pictures",
-        features: ["Short Films", "Documentaries", "Music Videos"],
-      },
-      {
-        icon: Award,
-        title: "Brand Photography",
-        description: "Elevate your brand with stunning visual content",
-        features: ["Brand Campaigns", "Social Media", "Marketing Materials"],
-      },
-      {
-        icon: Globe,
-        title: "Travel & Lifestyle",
-        description: "Capturing authentic moments around the world",
-        features: ["Travel Photography", "Lifestyle Shoots", "Adventure Sports"],
-      },
-      {
-        icon: Sparkles,
-        title: "Fine Art Prints",
-        description: "Museum-quality prints for collectors and enthusiasts",
-        features: ["Limited Editions", "Gallery Prints", "Custom Framing"],
-      },
-    ],
-    []
-  );
+  // ==================== Showcase Images (GSAP track) ====================
+  // Build a large pool across all categories, shuffle, then take ~14
+  const SHOWCASE_IMAGES = useMemo(() => {
+    const pool = [...PORTRAITS, ...STREET, ...WEDDING];
+    return pickRandom(pool, 14).map((url) => optimizeImageUrl(url, 900));
+  }, []);
 
-  const showcaseImages = useMemo(
-    () => [
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&q=80",
-    ],
-    []
-  );
+  // ==================== Instagram Grid (more images) ====================
+  // Pull ~36 mixed images, shuffled per refresh
+  const IG_IMAGES = useMemo(() => {
+    const pool = [...PORTRAITS, ...STREET, ...WEDDING];
+    return pickRandom(pool, 36).map((url) => ({
+      src: optimizeImageUrl(url, 800),
+      alt: "Frames By Inder",
+    }));
+  }, []);
 
   /* ==========================================================================
      Three.js dotted wave (responsive, leak-free, reduced work on mobile)
@@ -195,12 +237,7 @@ const Home = () => {
     const AMOUNTY = isMobile ? 36 : 60;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      60,
-      1, // temp; updated below
-      1,
-      10000
-    );
+    const camera = new THREE.PerspectiveCamera(60, 1, 1, 10000);
     camera.position.set(0, 355, 1220);
 
     const renderer = new THREE.WebGLRenderer({
@@ -302,31 +339,34 @@ const Home = () => {
   }, []);
 
   /* ==========================================================================
+     GSAP showcase slider
+     - Two duplicated rows for seamless loop
+     - Adjust DUR for speed (lower = faster)
+  ========================================================================== */
+  useEffect(() => {
+    if (!showcaseTrackRef.current) return;
+    const el = showcaseTrackRef.current;
+    const DUR = 25; // seconds; set 18 for faster, 35 for slower
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { xPercent: 0 },
+        {
+          xPercent: -100,
+          duration: DUR,
+          ease: "linear",
+          repeat: -1,
+        }
+      );
+    }, el);
+    return () => ctx.revert();
+  }, []);
+
+  /* ==========================================================================
      Handlers
   ========================================================================== */
   const handleNavigateToContact = () => navigate("/contact");
   const handleProjectClick = (link: string) => navigate(link);
-
-  /* ==========================================================================
-     Global styles (lightweight)
-  ========================================================================== */
-  const IG_IMAGES = useMemo(
-    () => [
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=500",
-      "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&q=80&w=500",
-      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=500",
-      "https://images.unsplash.com/photo-1468818438311-4bab781ab9b8?auto=format&fit=crop&q=80&w=500",
-      "https://images.unsplash.com/photo-1533371452382-d45a9da51ad9?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80",
-    ],
-    []
-  );
 
   return (
     <div
@@ -338,23 +378,9 @@ const Home = () => {
         * { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif }
 
         .glass-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px) }
-
-        /* CSS-only marquee track (no JS timers). Duplicate rows to loop seamlessly */
-        .showcase-strip { display:flex; gap:2rem; will-change: transform }
-        .marquee {
-          --speed: 40s;
-          animation: marquee var(--speed) linear infinite;
-        }
-        @keyframes marquee {
-          0% { transform: translateX(0) }
-          100% { transform: translateX(-50%) }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .marquee { animation: none }
-        }
       `}</style>
 
-      {/* ============================ Hero ============================ */}
+      {/* ============================ Hero (kept as-is) ============================ */}
       <section className="h-screen relative overflow-hidden pt-20">
         {/* Background */}
         <motion.div style={{ y: bgY }} className="absolute inset-0">
@@ -498,63 +524,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ============================ Services ============================ */}
-      <section id="services" className="py-32 px-6 relative bg-black">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="text-5xl md:text-6xl font-thin tracking-[0.2em] text-center mb-24"
-          >
-            SERVICES
-          </motion.h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
-                whileHover={{ y: -10, transition: { duration: 0.3, ease: "easeOut" } }}
-                className="group"
-              >
-                <div className="glass-card border border-white/10 rounded-2xl p-8 hover:border-white/30 transition-all duration-700 h-full hover:shadow-[0_0_50px_rgba(255,255,255,0.1)]">
-                  <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.8 }}>
-                    <service.icon className="w-12 h-12 mb-6 opacity-70 group-hover:opacity-100 transition-opacity" />
-                  </motion.div>
-                  <h3 className="text-xl font-light tracking-[0.08em] mb-4">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed mb-6 font-extralight">
-                    {service.description}
-                  </p>
-                  <ul className="space-y-2 mb-6">
-                    {service.features.map((f, i) => (
-                      <li key={i} className="text-xs text-gray-500 font-light flex items-center gap-2">
-                        <span className="w-1 h-1 bg-gray-500 rounded-full" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    className="flex items-center gap-2 text-xs tracking-[0.2em] text-gray-400 group-hover:text-white transition-colors duration-500 font-light cursor-pointer"
-                    onClick={handleNavigateToContact}
-                  >
-                    Learn More
-                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================ Showcase (CSS marquee) ============================ */}
+      {/* ============================ Showcase (GSAP marquee) ============================ */}
       <section className="py-32 overflow-hidden relative bg-black">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -565,15 +535,15 @@ const Home = () => {
           SHOWCASE
         </motion.h2>
 
-        {/* two identical rows, each is 200% width and slides left */}
-        <div className="relative">
-          <div className="showcase-strip marquee">
-            {[...showcaseImages, ...showcaseImages].map((image, i) => (
+        <div className="relative overflow-hidden">
+          {/* Track duplicated for seamless loop */}
+          <div ref={showcaseTrackRef} className="flex gap-6">
+            {[...SHOWCASE_IMAGES, ...SHOWCASE_IMAGES].map((image, i) => (
               <motion.div
-                key={`row1-${i}`}
+                key={`showcase-${i}`}
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.4 }}
-                className="flex-none w-[360px] h-[460px] relative overflow-hidden rounded-xl cursor-pointer"
+                transition={{ duration: 0.3 }}
+                className="flex-none w-[340px] md:w-[420px] h-[440px] md:h-[520px] relative overflow-hidden rounded-xl cursor-pointer"
                 onClick={() => navigate("/contact")}
               >
                 <img
@@ -614,13 +584,13 @@ const Home = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.04, ease: "easeOut" }}
+                transition={{ duration: 0.4, delay: index * 0.03, ease: "easeOut" }}
                 whileHover={{ scale: 1.05, zIndex: 10 }}
                 className="relative aspect-square overflow-hidden cursor-pointer group"
               >
                 <img
-                  src={image}
-                  alt={`Instagram ${index + 1}`}
+                  src={image.src}
+                  alt={image.alt}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
                   decoding="async"
@@ -646,7 +616,7 @@ const Home = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => window.open("https://instagram.com", "_blank")}
+              onClick={() => window.open("https://instagram.com/frames_by_inder", "_blank")}
               className="px-8 py-3 border border-white/20 text-xs tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-500 font-light cursor-pointer"
             >
               FOLLOW ON INSTAGRAM
@@ -704,9 +674,7 @@ const Home = () => {
             transition={{ duration: 0.9, delay: 0.2 }}
             className="text-gray-400 text-lg font-extralight leading-relaxed max-w-3xl mx-auto"
           >
-            Let's build something amazing together. Open for commissions &
-            collaborations because great ideas deserve to be brought to life
-            with passion and purpose.
+            Let's build something amazing together. Open for commissions & collaborations because great ideas deserve to be brought to life with passion and purpose.
           </motion.p>
 
           <motion.div
