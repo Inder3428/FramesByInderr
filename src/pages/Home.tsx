@@ -10,8 +10,6 @@ import gsap from "gsap";
 
 /* ============================================================================
    ImageKit optimizer
-   - Appends or merges transform query params safely
-   - Defaults target width to 800 for grids / thumbs
 ============================================================================ */
 function optimizeImageUrl(url: string, width = 800, quality = 80) {
   const tr = `tr=w-${width},q-${quality},f-webp,pr-true`;
@@ -20,11 +18,8 @@ function optimizeImageUrl(url: string, width = 800, quality = 80) {
 
 /* ============================================================================
    Your master image pools (PORTRAITS / STREET / WEDDING)
-   - Pulled from your provided lists
-   - Used everywhere we need images (projects cards, showcase, instagram)
 ============================================================================ */
 const PORTRAITS = [
-  "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(13).JPG?updatedAt=1755041766662",
   "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(13).JPG?updatedAt=1755041766662",
   "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(6).jpg?updatedAt=1755041766602",
   "https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(12).JPG?updatedAt=1755041766232",
@@ -184,8 +179,7 @@ const Home = () => {
   const bgY = useTransform(scrollYProgress, [0, 1], [0, 300]);
 
   /* ==========================================================================
-     Data (memoized so arrays aren't re-created)
-     - Projects thumbnails use YOUR images now (replacing Unsplash)
+     Data
   ========================================================================== */
   const projects = useMemo(
     () => [
@@ -205,57 +199,56 @@ const Home = () => {
     []
   );
 
-  // ==================== Showcase Images (GSAP track) ====================
-  // Build a large pool across all categories, shuffle, then take ~14
   const SHOWCASE_IMAGES = useMemo(() => {
     const pool = [...PORTRAITS, ...STREET, ...WEDDING];
-    return pickRandom(pool, 14).map((url) => optimizeImageUrl(url, 900));
+    return pickRandom(pool, 16).map((url) => optimizeImageUrl(url, 900));
   }, []);
 
-  // ==================== Instagram Grid (more images) ====================
-  // Pull ~36 mixed images, shuffled per refresh
   const IG_IMAGES = useMemo(() => {
     const pool = [...PORTRAITS, ...STREET, ...WEDDING];
-    return pickRandom(pool, 36).map((url) => ({
+    return pickRandom(pool, 12).map((url) => ({
       src: optimizeImageUrl(url, 800),
       alt: "Frames By Inder",
     }));
   }, []);
 
   /* ==========================================================================
-     Three.js dotted wave (responsive, leak-free, reduced work on mobile)
+     Three.js dotted wave (visible, responsive, leak-free)
   ========================================================================== */
   useEffect(() => {
     if (!canvasRef.current || !contactSectionRef.current) return;
 
-    // reduce points on small screens
-    const width = contactSectionRef.current.clientWidth;
-    const isMobile = width < 768;
+    const sectionEl = contactSectionRef.current as HTMLElement; // safe: guarded above
+    const canvasEl = canvasRef.current as HTMLCanvasElement;
 
-    const SEPARATION = isMobile ? 140 : 150;
+    // reduce points on small screens
+    const isMobile = sectionEl.clientWidth < 768;
+
+    const SEPARATION = isMobile ? 120 : 150;
     const AMOUNTX = isMobile ? 24 : 40;
-    const AMOUNTY = isMobile ? 36 : 60;
+    const AMOUNTY = isMobile ? 32 : 60;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, 1, 1, 10000);
     camera.position.set(0, 355, 1220);
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
-      canvas: canvasRef.current,
+      canvas: canvasEl,
+      powerPreference: "high-performance",
+      preserveDrawingBuffer: false,
     });
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); // cap DPR
+    renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2));
 
-    // size to section
     const resize = () => {
-      const el = contactSectionRef.current!;
-      const w = el.clientWidth;
-      const h = Math.max(el.clientHeight, 400);
+      const w = sectionEl.clientWidth || 1;
+      const h = Math.max(sectionEl.clientHeight, 420);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
+      renderer.setSize(w, h, true);
     };
     resize();
 
@@ -269,23 +262,20 @@ const Home = () => {
           0,
           iy * SEPARATION - (AMOUNTY * SEPARATION) / 2
         );
-        // light gray
-        colors.push(0.78, 0.78, 0.78);
+        colors.push(0.92, 0.92, 0.92); // bright dots
       }
     }
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: isMobile ? 6 : 8,
+      size: isMobile ? 8 : 10,
       vertexColors: true,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.85,
       sizeAttenuation: true,
+      depthWrite: false,
     });
     const points = new THREE.Points(geometry, material);
     scene.add(points);
@@ -294,9 +284,9 @@ const Home = () => {
     let count = 0;
 
     const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      typeof globalThis !== "undefined" &&
+      "matchMedia" in globalThis &&
+      globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const animate = () => {
       raf = requestAnimationFrame(animate);
@@ -318,20 +308,30 @@ const Home = () => {
       renderer.render(scene, camera);
     };
 
-    // resize observer keeps canvas synced with section
-    const ro = new ResizeObserver(() => resize());
-    ro.observe(contactSectionRef.current);
+    // ONE cleanup function (avoids 'never' unions)
+    let cleanup: () => void;
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(resize);
+      ro.observe(sectionEl);
+      cleanup = () => ro.disconnect();
+    } else {
+      const onResize = () => resize();
+      globalThis.addEventListener("resize", onResize as any);
+      cleanup = () => globalThis.removeEventListener("resize", onResize as any);
+    }
 
     animate();
 
     return () => {
       cancelAnimationFrame(raf);
-      ro.disconnect();
+      cleanup?.();
       scene.traverse((obj) => {
-        if (obj instanceof THREE.Points) {
-          obj.geometry.dispose();
-          if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose());
-          else obj.material.dispose();
+        const anyObj = obj as any;
+        if (anyObj.geometry) anyObj.geometry.dispose();
+        if (anyObj.material) {
+          const m = anyObj.material;
+          if (Array.isArray(m)) m.forEach((x) => x.dispose());
+          else m.dispose();
         }
       });
       renderer.dispose();
@@ -340,25 +340,20 @@ const Home = () => {
 
   /* ==========================================================================
      GSAP showcase slider
-     - Two duplicated rows for seamless loop
-     - Adjust DUR for speed (lower = faster)
   ========================================================================== */
   useEffect(() => {
     if (!showcaseTrackRef.current) return;
-    const el = showcaseTrackRef.current;
-    const DUR = 25; // seconds; set 18 for faster, 35 for slower
+    const el = showcaseTrackRef.current as HTMLDivElement; // non-null in branch
+    const DUR = 25;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         el,
         { xPercent: 0 },
-        {
-          xPercent: -100,
-          duration: DUR,
-          ease: "linear",
-          repeat: -1,
-        }
+        { xPercent: -100, duration: DUR, ease: "linear", repeat: -1 }
       );
     }, el);
+
     return () => ctx.revert();
   }, []);
 
@@ -369,18 +364,15 @@ const Home = () => {
   const handleProjectClick = (link: string) => navigate(link);
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-black text-white overflow-x-hidden"
-    >
+    <div ref={containerRef} className="min-h-screen bg-black text-white overflow-x-hidden">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&display=swap');
         * { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif }
-
+        #three-contact-canvas { display: block; width: 100%; height: 100%; }
         .glass-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px) }
       `}</style>
 
-      {/* ============================ Hero (kept as-is) ============================ */}
+      {/* ============================ Hero ============================ */}
       <section className="h-screen relative overflow-hidden pt-20">
         {/* Background */}
         <motion.div style={{ y: bgY }} className="absolute inset-0">
@@ -413,18 +405,10 @@ const Home = () => {
               transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
             >
               <h1 className="text-[clamp(3rem,10vw,9rem)] font-thin tracking-[0.02em] leading-[0.85]">
-                <motion.span
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                >
+                <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.5 }}>
                   INDER
                 </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
-                >
+                <motion.span initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.7 }}>
                   PREET
                 </motion.span>
               </h1>
@@ -460,14 +444,8 @@ const Home = () => {
           transition={{ duration: 1, delay: 2 }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20"
         >
-          <motion.div
-            animate={{ y: [0, 15, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2"
-          >
-            <span className="text-xs tracking-[0.3em] text-gray-400 font-extralight">
-              SCROLL
-            </span>
+          <motion.div animate={{ y: [0, 15, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} className="flex flex-col items-center gap-2">
+            <span className="text-xs tracking-[0.3em] text-gray-400 font-extralight">SCROLL</span>
             <ChevronDown className="w-4 h-4 text-gray-400" />
           </motion.div>
         </motion.div>
@@ -510,12 +488,8 @@ const Home = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                   </div>
                   <div className="mt-6">
-                    <h3 className="text-2xl font-thin tracking-[0.1em] mb-2">
-                      {project.title}
-                    </h3>
-                    <p className="text-xs tracking-[0.3em] text-gray-500 font-light">
-                      {project.year}
-                    </p>
+                    <h3 className="text-2xl font-thin tracking-[0.1em] mb-2">{project.title}</h3>
+                    <p className="text-xs tracking-[0.3em] text-gray-500 font-light">{project.year}</p>
                   </div>
                 </motion.div>
               </div>
@@ -536,7 +510,6 @@ const Home = () => {
         </motion.h2>
 
         <div className="relative overflow-hidden">
-          {/* Track duplicated for seamless loop */}
           <div ref={showcaseTrackRef} className="flex gap-6">
             {[...SHOWCASE_IMAGES, ...SHOWCASE_IMAGES].map((image, i) => (
               <motion.div
@@ -569,12 +542,8 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-5xl md:text-6xl font-thin tracking-[0.2em] mb-4">
-              INSTAGRAM
-            </h2>
-            <p className="text-sm tracking-[0.3em] text-gray-400 font-extralight">
-              @Frames_by_Inder
-            </p>
+            <h2 className="text-5xl md:text-6xl font-thin tracking-[0.2em] mb-4">INSTAGRAM</h2>
+            <p className="text-sm tracking-[0.3em] text-gray-400 font-extralight">@Frames_by_Inder</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
@@ -597,9 +566,7 @@ const Home = () => {
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 pointer-events-none">
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-white text-sm font-light">
-                      ❤️ {Math.floor(Math.random() * 900 + 100)}
-                    </p>
+                    <p className="text-white text-sm font-light">❤️ {Math.floor(Math.random() * 900 + 100)}</p>
                   </div>
                 </div>
               </motion.div>
@@ -632,14 +599,13 @@ const Home = () => {
         className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden bg-black"
       >
         <canvas
+          id="three-contact-canvas"
           ref={canvasRef}
           className="absolute inset-0 pointer-events-none"
           style={{ zIndex: 0 }}
         />
-        <div
-          className="absolute inset-0 bg-black/40 pointer-events-none"
-          style={{ zIndex: 1 }}
-        />
+        {/* Lighter overlay so points pop */}
+        <div className="absolute inset-0 bg-black/20 pointer-events-none" style={{ zIndex: 1 }} />
 
         <motion.div
           initial={{ opacity: 0, y: 50 }}

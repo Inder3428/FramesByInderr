@@ -1,37 +1,169 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Favicons (adjust paths if you have your own icons) -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- Performance: DNS Prefetch & Preconnect for ImageKit + Fonts -->
+    <link rel="dns-prefetch" href="https://ik.imagekit.io" />
+    <link rel="preconnect" href="https://ik.imagekit.io" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Optional: Preload a key brand font weight if you use Google Fonts -->
+    <!-- <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&display=swap" /> -->
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://inderpreet.com/" />
+
     <!-- Primary Meta Tags -->
-    <title>Inderpreet Singh - Professional Photography Portfolio</title>
-    <meta name="title" content="Inderpreet Singh - Professional Photography Portfolio">
-    <meta name="description" content="Explore the captivating world of professional photography through the lens of Inderpreet Singh. Specializing in portraits, events, street photography, and more.">
-    
+    <title>Frames By Inder | Cinematic Photography Portfolio</title>
+    <meta name="title" content="Frames By Inder | Cinematic Photography Portfolio" />
+    <meta
+      name="description"
+      content="Frames By Inder — a modern, cinematic photography portfolio by Inderpreet Singh. Portraits, street, and wedding stories crafted with minimal, elegant visuals."
+    />
+    <meta
+      name="keywords"
+      content="Frames By Inder, Inderpreet Singh, photography portfolio, cinematic portraits, street photography, wedding photography, NYC photographer, visual storytelling"
+    />
+    <meta name="author" content="Inderpreet Singh" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://inderpreet.com/">
-    <meta property="og:title" content="Inderpreet Singh - Professional Photography Portfolio">
-    <meta property="og:description" content="Explore the captivating world of professional photography through the lens of Inderpreet Singh. Specializing in portraits, events, street photography, and more.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80">
-    
+    <meta property="og:site_name" content="Frames By Inder" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://inderpreet.com/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Frames By Inder – Cinematic Photography Portfolio" />
+    <meta
+      property="og:description"
+      content="A visual storytelling experience by Inderpreet Singh capturing portraits, street, and weddings in a cinematic aesthetic."
+    />
+    <!-- ✅ Your ImageKit thumbnail (street) -->
+    <meta
+      property="og:image"
+      content="https://ik.imagekit.io/2z1l6hi16/Street/Street%20(8).jpg?updatedAt=1755041799679&tr=w-1200,q-85,f-webp,pr-true"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://inderpreet.com/">
-    <meta property="twitter:title" content="Inderpreet Singh - Professional Photography Portfolio">
-    <meta property="twitter:description" content="Explore the captivating world of professional photography through the lens of Inderpreet Singh. Specializing in portraits, events, street photography, and more.">
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80">
-    
-    <!-- Additional Meta Tags -->
-    <meta name="keywords" content="photography, portrait photography, event photography, street photography, professional photographer, photo portfolio, wedding photography, graduation photos">
-    <meta name="author" content="Inderpreet Singh">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://inderpreet.com/">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://inderpreet.com/" />
+    <meta name="twitter:title" content="Frames By Inder – Cinematic Photography Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Explore the creative portfolio of Inderpreet Singh — minimalist, cinematic, and story-driven photography."
+    />
+    <meta
+      name="twitter:image"
+      content="https://ik.imagekit.io/2z1l6hi16/Street/Street%20(8).jpg?updatedAt=1755041799679&tr=w-1200,q-85,f-webp,pr-true"
+    />
+
+    <!-- Hreflang (if you add more languages later, duplicate with proper lang URLs) -->
+    <link rel="alternate" href="https://inderpreet.com/" hreflang="en-us" />
+
+    <!-- Structured Data: WebSite + Person + Organization (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://inderpreet.com/#website",
+            "url": "https://inderpreet.com/",
+            "name": "Frames By Inder",
+            "description": "Cinematic photography portfolio by Inderpreet Singh.",
+            "inLanguage": "en-US",
+            "publisher": { "@id": "https://inderpreet.com/#organization" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://inderpreet.com/search?q={query}",
+              "query-input": "required name=query"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://inderpreet.com/#organization",
+            "name": "Frames By Inder",
+            "url": "https://inderpreet.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://inderpreet.com/apple-touch-icon.png"
+            },
+            "sameAs": [
+              "https://www.instagram.com/inderpreettsingh/",
+              "https://www.instagram.com/frames_by_inder/"
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://inderpreet.com/#person",
+            "name": "Inderpreet Singh",
+            "url": "https://inderpreet.com/",
+            "jobTitle": "Photographer",
+            "image": "https://ik.imagekit.io/2z1l6hi16/Street/Street%20(8).jpg?updatedAt=1755041799679&tr=w-800,q-85,f-webp,pr-true",
+            "sameAs": [
+              "https://www.instagram.com/inderpreettsingh/",
+              "https://www.instagram.com/frames_by_inder/"
+            ],
+            "worksFor": { "@id": "https://inderpreet.com/#organization" }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://inderpreet.com/#breadcrumbs",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://inderpreet.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Portfolio",
+                "item": "https://inderpreet.com/work"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- Optional: Social profile meta (helps some crawlers) -->
+    <meta property="profile:username" content="frames_by_inder" />
+
+    <!-- Safety: Referrer policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Noscript tip -->
+    <noscript>
+      <style>
+        body { background: #000; color: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+        .noscript-wrap { max-width: 760px; margin: 3rem auto; padding: 1.25rem; }
+      </style>
+      <div class="noscript-wrap">
+        <h1>Frames By Inder</h1>
+        <p>Please enable JavaScript to view this website properly.</p>
+      </div>
+    </noscript>
   </body>
 </html>

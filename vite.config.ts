@@ -1,83 +1,83 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      registerType: "autoUpdate",
+      injectRegister: "auto",
       manifest: {
-        name: 'Inderpreet Singh Photography',
-        short_name: 'Inderpreet',
-        description: 'Photography portfolio by Inderpreet Singh',
-        theme_color: '#000000',
-        background_color: '#000000',
-        display: 'standalone',
-        start_url: '/',
+        name: "Inderpreet Singh Photography",
+        short_name: "Inderpreet",
+        description: "Photography portfolio by Inderpreet Singh",
+        theme_color: "#000000",
+        background_color: "#000000",
+        display: "standalone",
+        start_url: "/",
+        // NOTE: iOS doesn't accept SVG app icons; PNG is safest.
         icons: [
-          // you can replace with your own PNGs later; SVG works in most cases
-          { src: '/vite.svg', sizes: '192x192', type: 'image/svg+xml' },
-          { src: '/vite.svg', sizes: '512x512', type: 'image/svg+xml' },
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+          // optional maskable
+          { src: "/icons/maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
       },
       workbox: {
-        // Runtime caching strategies
+        // Let workbox pre-cache typical file types from your build
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp}"],
         runtimeCaching: [
-          // HTML pages: try network first, fall back to cache (so updates show up)
+          // JS & CSS → fast, then refresh in background
           {
-            urlPattern: ({ request }) => request.destination === 'document',
-            handler: 'NetworkFirst',
+            urlPattern: /\.(?:js|css)$/i,
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "static-cache" },
+          },
+          // ImageKit CDN
+          {
+            urlPattern: /^https:\/\/ik\.imagekit\.io\/.*$/i,
+            handler: "CacheFirst",
             options: {
-              cacheName: 'html-cache',
-              networkTimeoutSeconds: 4,
+              cacheName: "imagekit-cache",
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
-          // JS/CSS: serve instantly from cache, refresh in background
+          // Unsplash (if any remain)
           {
-            urlPattern: ({ request }) =>
-              request.destination === 'script' || request.destination === 'style',
-            handler: 'StaleWhileRevalidate',
+            urlPattern: /^https:\/\/images\.unsplash\.com\/.*$/i,
+            handler: "CacheFirst",
             options: {
-              cacheName: 'static-cache',
-            },
-          },
-          // Images from your CDNs: cache-first with sensible limits
-          {
-            urlPattern: /^https:\/\/(ik\.imagekit\.io|images\.unsplash\.com)/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'image-cache',
-              expiration: {
-                maxEntries: 120,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-              },
+              cacheName: "unsplash-cache",
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
         ],
+        navigateFallback: "/index.html",
       },
     }),
   ],
   optimizeDeps: {
-    exclude: ['lucide-react'], // keep your original setting
+    // keep if you intentionally exclude lucide-react
+    exclude: ["lucide-react"],
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   build: {
     sourcemap: false,
     chunkSizeWarningLimit: 1024,
     rollupOptions: {
-      // Optional: gentle chunking to keep first-load JS small
       output: {
         manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-fm': ['framer-motion'],
-          'vendor-3d': ['three'],
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-fm": ["framer-motion"],
+          "vendor-3d": ["three"],
         },
       },
     },

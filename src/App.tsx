@@ -6,12 +6,35 @@ import { HelmetProvider, Helmet } from 'react-helmet-async';
 // Keep Layout eager (it’s tiny + needed for all routes)
 import Layout from './components/Layout';
 
+// Helper: ensure React.lazy always gets { default: Component }
+const withDefault = <T extends React.ComponentType<any>>(
+  loader: () => Promise<any>,
+  named?: string
+) =>
+  lazy(async () => {
+    const mod = await loader();
+    const def = mod.default ?? (named ? mod[named] : undefined);
+    if (!def) {
+      // last resort: pick the first function export (helps during dev)
+      const fallback =
+        Object.values(mod).find((v) => typeof v === 'function') ?? null;
+      if (!fallback) {
+        throw new Error('Module has no default export and no matching named export.');
+      }
+      return { default: fallback as T };
+    }
+    return { default: def as T };
+  });
+
 // Code-split pages (smaller initial bundle)
-const Home = lazy(() => import('./pages/Home'));
-const Work = lazy(() => import('./pages/Work'));
-const About = lazy(() => import('./pages/About'));
-const Contact = lazy(() => import('./pages/Contact'));
-const PortfolioCategory = lazy(() => import('./pages/PortfolioCategory'));
+const Home = withDefault(() => import('./pages/Home'), 'Home');
+const Work = withDefault(() => import('./pages/Work'), 'Work');
+const About = withDefault(() => import('./pages/About'), 'About');
+const Contact = withDefault(() => import('./pages/Contact'), 'Contact');
+const PortfolioCategory = withDefault(
+  () => import('./pages/PortfolioCategory'),
+  'PortfolioCategory'
+);
 
 // --------------------------------------------
 // Utilities
@@ -21,7 +44,6 @@ const capitalize = (s: string | undefined | null) =>
 
 const friendlyCategory = (slug: string | undefined) => {
   if (!slug) return '';
-  // Map slugs to nicer titles if needed
   const map: Record<string, string> = {
     portraits: 'Portraits',
     street: 'Street',
@@ -37,8 +59,9 @@ const friendlyCategory = (slug: string | undefined) => {
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    // small delay allows layout to mount before jumping
-    const id = window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }));
+    const id = window.requestAnimationFrame(() =>
+      window.scrollTo({ top: 0, behavior: 'auto' }) // 'instant' is non-standard
+    );
     return () => cancelAnimationFrame(id);
   }, [pathname]);
   return null;
@@ -77,8 +100,6 @@ function PageTitle() {
     <Helmet prioritizeSeoTags>
       <title>{title}</title>
       <meta name="description" content={desc} />
-      {/* Optional: keep canonical simple for SPA; customize if you have per-route canonical needs */}
-      {/* <link rel="canonical" href={`https://inderpreet.com${path}`} /> */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={desc} />
       <meta name="twitter:title" content={title} />
