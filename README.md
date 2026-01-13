@@ -1,44 +1,54 @@
-# Frames by Inder 📸
+# Frames By Inder 📸
 
-**Frames by Inder** is a modern, interactive photography portfolio project built to showcase freelance photography work. It highlights portraits, lifestyle, events, and creative conceptual shoots with a sleek, responsive, and animated UI.
+> **Live Demo:** [https://framesbyinderpreet.netlify.app](https://framesbyinderpreet.netlify.app)  
 
----
-
-## 🔹 MVP Overview
-This project serves as a **Minimum Viable Product (MVP)** to:  
-- Showcase photography projects with a clean, modern layout  
-- Provide a responsive gallery with animations  
-- Enable easy contact and booking for potential clients  
-- Combine creative photography with technical web skills  
+**Frames By Inder** is a modern, interactive photography portfolio website that showcases freelance photography work in NYC. It’s built with **React, Tailwind CSS, and Framer Motion**, combining a sleek design with smooth animations to give visitors an immersive experience.
 
 ---
 
-## 💡 Features
-- Fully responsive UI for desktop and mobile  
-- Interactive gallery with **lazy-loading & animations**  
-- Project categorization: Portraits, Lifestyle, Events, Creative  
-- Contact form integrated with email or social media  
-- Smooth transitions and optimized performance  
+## 🚀 Project Overview
+This portfolio MVP was created to:
+
+- Showcase photography projects in a clean, professional layout  
+- Highlight portraits, lifestyle, event, and creative conceptual photography  
+- Provide smooth navigation and responsive design for all devices  
+- Allow potential clients to easily contact or book services  
+- Demonstrate the integration of **creative visuals with modern web development skills**
+
+---
+
+## ✨ Key Features
+- **Responsive Design:** Optimized for desktop, tablet, and mobile  
+- **Interactive Gallery:** Smooth scrolling and animated image transitions  
+- **Project Categorization:** Portraits, Lifestyle, Events, Creative  
+- **Animated UI:** Subtle, immersive animations using Framer Motion  
+- **Contact Section:** Direct links to Instagram, email, and social media  
+- **SEO & Performance Optimized:** Fast load times and clean structure  
 
 ---
 
 ## 🛠️ Tech Stack
 **Frontend:**  
-- HTML5, CSS3, JavaScript  
-- React.js, Tailwind CSS, Framer Motion  
+- React.js  
+- JavaScript (ES6+)  
+- Tailwind CSS  
+- Framer Motion (animations)
 
 **Design & Media:**  
-- Figma, Adobe Photoshop, Lightroom  
+- Figma for planning UI/UX  
+- Adobe Photoshop & Lightroom for image editing  
 
-**Version Control & Deployment:**  
-- Git, GitHub, Netlify  
+**Version Control & Hosting:**  
+- Git & GitHub for source control  
+- Netlify for continuous deployment  
 
 ---
-**Live Demo:** [Frames by Inder Portfolio]([https://your-live-site-link.netlify.app](https://framesbyinderpreet.netlify.app/))
+
+**Live Demo:** [https://framesbyinderpreet.netlify.app](https://framesbyinderpreet.netlify.app)
 
 ---
 
-## 🚀 Installation / Running Locally
+## 🚀 Installation / Run Locally
 1. Clone the repository:  
 ```bash
 git clone https://github.com/InderpreetSingh/frames-by-inder.git
