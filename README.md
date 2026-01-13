@@ -34,7 +34,7 @@ This project serves as a **Minimum Viable Product (MVP)** to:
 - Git, GitHub, Netlify  
 
 ---
-**Live Demo:** [Frames by Inder Portfolio](https://your-live-site-link.netlify.app)
+**Live Demo:** [Frames by Inder Portfolio]([https://your-live-site-link.netlify.app](https://framesbyinderpreet.netlify.app/))
 
 ---
 
