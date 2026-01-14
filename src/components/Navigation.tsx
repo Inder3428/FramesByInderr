@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const links = [
     { path: "/", label: "Home" },
@@ -14,124 +15,89 @@ const Navigation = () => {
     { path: "/contact", label: "Contact" },
   ];
 
+  /* Navbar scroll */
   useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.documentElement.style.scrollBehavior = "auto";
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Prevent background scroll when mobile menu is open
+  /* Force close on route change */
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "auto";
-  }, [menuOpen]);
+    setMenuOpen(false);
+  }, [location.pathname]);
 
-  const isActive = (path: string) => {
-    if (path === "/") return location.pathname === "/";
-    return location.pathname.startsWith(path);
+  const handleNavigate = (path: string) => {
+    setMenuOpen(false);        // ✅ CLOSE FIRST
+    navigate(path);            // ✅ THEN NAVIGATE
   };
+
+  const isActive = (path: string) =>
+    path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
+      initial={{ y: -80 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ${
-        isScrolled
-          ? "bg-black/95 backdrop-blur-xl py-4 shadow-2xl"
-          : "bg-transparent py-8"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? "bg-black/95 py-4" : "bg-transparent py-8"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" onClick={() => setMenuOpen(false)}>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="text-xl md:text-2xl font-thin tracking-[0.3em] cursor-pointer relative z-[101]"
-          >
-            INDERPREET
-          </motion.div>
-        </Link>
+        <div
+          onClick={() => handleNavigate("/")}
+          className="text-xl md:text-2xl font-thin tracking-[0.3em] cursor-pointer"
+        >
+          INDERPREET
+        </div>
 
-        {/* Desktop Links */}
+        {/* Desktop */}
         <div className="hidden md:flex gap-8">
           {links.map((item) => (
-            <Link key={item.label} to={item.path}>
-              <motion.div
-                whileHover={{ opacity: 0.7 }}
-                whileTap={{ scale: 0.95 }}
-                className={`text-[11px] md:text-xs font-light tracking-[0.2em] transition-all duration-300 ${
-                  isActive(item.path)
-                    ? "text-white"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {item.label}
-              </motion.div>
-            </Link>
+            <div
+              key={item.label}
+              onClick={() => handleNavigate(item.path)}
+              className={`text-xs tracking-[0.2em] cursor-pointer ${
+                isActive(item.path)
+                  ? "text-white"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              {item.label}
+            </div>
           ))}
         </div>
 
-        {/* Mobile Menu Button */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          className="md:hidden flex flex-col gap-1.5 relative z-[101]"
-          aria-label="Menu"
-          onClick={() => setMenuOpen(!menuOpen)}
+        {/* Burger */}
+        <button
+          className="md:hidden flex flex-col gap-1.5"
+          onClick={() => setMenuOpen((p) => !p)}
         >
-          <span
-            className={`w-6 h-0.5 bg-white transition-all duration-300 ${
-              menuOpen ? "rotate-45 translate-y-[7px]" : ""
-            }`}
-          />
-          <span
-            className={`w-6 h-0.5 bg-white transition-all duration-300 ${
-              menuOpen ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`w-6 h-0.5 bg-white transition-all duration-300 ${
-              menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
-            }`}
-          />
-        </motion.button>
+          <span className={`w-6 h-0.5 bg-white ${menuOpen && "rotate-45 translate-y-[7px]"}`} />
+          <span className={`w-6 h-0.5 bg-white ${menuOpen && "opacity-0"}`} />
+          <span className={`w-6 h-0.5 bg-white ${menuOpen && "-rotate-45 -translate-y-[7px]"}`} />
+        </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 py-10 flex flex-col items-center space-y-6 z-[90]"
-          >
-            {links.map((item) => (
-              <Link
-                key={item.label}
-                to={item.path}
-                onClick={() => setMenuOpen(false)}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`text-sm font-light tracking-[0.25em] ${
-                    isActive(item.path)
-                      ? "text-white"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {item.label}
-                </motion.div>
-              </Link>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-black/95 backdrop-blur-xl py-10 flex flex-col items-center space-y-6">
+          {links.map((item) => (
+            <div
+              key={item.label}
+              onClick={() => handleNavigate(item.path)} // ✅ ALWAYS CLOSES
+              className={`text-sm tracking-[0.25em] cursor-pointer ${
+                isActive(item.path)
+                  ? "text-white"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              {item.label}
+            </div>
+          ))}
+        </div>
+      )}
     </motion.nav>
   );
 };
