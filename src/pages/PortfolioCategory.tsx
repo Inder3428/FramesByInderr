@@ -38,6 +38,104 @@ const srcSet = (url: string, widths = [400, 600, 900, 1200, 1600]) =>
   widths.map((w) => `${optimizeImageUrl(url, w)} ${w}w`).join(', ');
 
 const portraitImages: ImageItem[] = [
+
+  // ===== Studio / Editorial Portraits =====
+{ id: 'p-st-1', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1278%20copy.jpg?updatedAt=1769126833686', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 1', year: '2024' },
+{ id: 'p-st-2', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1281%20copy.jpg?updatedAt=1769126832997', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 2', year: '2024' },
+{ id: 'p-st-3', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1279%20copy.jpg?updatedAt=1769126825770', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 3', year: '2024' },
+{ id: 'p-st-4', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1287%20copy.jpg?updatedAt=1769126812522', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 4', year: '2024' },
+{ id: 'p-st-5', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1289%20copy.jpg?updatedAt=1769126807948', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 5', year: '2024' },
+{ id: 'p-st-6', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1290%20copy.jpg?updatedAt=1769126806340', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 6', year: '2024' },
+{ id: 'p-st-7', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1397%20copy.jpg?updatedAt=1769126288773', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 7', year: '2024' },
+{ id: 'p-st-8', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1404%20copy.jpg?updatedAt=1769126288045', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 8', year: '2024' },
+{ id: 'p-st-9', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_1.jpg?updatedAt=1769126543133', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 9', year: '2024' },
+{ id: 'p-st-10', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1371%20copy.jpg?updatedAt=1769126649229', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 10', year: '2024' },
+{ id: 'p-st-11', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa.jpg?updatedAt=1769126733974', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 11', year: '2024' },
+{ id: 'p-st-12', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1355%20copy.jpg?updatedAt=1769126765148', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 12', year: '2024' },
+{ id: 'p-st-13', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1366%20copy.jpg?updatedAt=1769126806434', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 13', year: '2024' },
+{ id: 'p-st-14', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1356%20copy.jpg?updatedAt=1769126808264', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 14', year: '2024' },
+{ id: 'p-st-15', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1371%20copy_Full.jpg?updatedAt=1769126820878', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 15', year: '2024' },
+{ id: 'p-st-16', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1362%20copy.jpg?updatedAt=1769126823252', category: 'portraits', subcategory: 'studio-editorial', title: 'Studio Editorial 16', year: '2024' },
+
+// ===== Marij + Outdoor Series (Bottom → Top Order) =====
+{ id: 'p-marij-1', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0944.jpg?updatedAt=1769124699975', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 1', year: '2025' },
+{ id: 'p-marij-2', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0747%20copy.jpg?updatedAt=1769124827594', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 2', year: '2025' },
+{ id: 'p-marij-3', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0905%20copy.jpg?updatedAt=1769124839539', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 3', year: '2025' },
+{ id: 'p-marij-4', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0907%20copy.jpg?updatedAt=1769124845275', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 4', year: '2025' },
+{ id: 'p-marij-5', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0727%20dunkin.jpg?updatedAt=1769124860652', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 5', year: '2025' },
+{ id: 'p-marij-6', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0856%20copy.jpg?updatedAt=1769124866019', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 6', year: '2025' },
+{ id: 'p-marij-7', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0949%20copy.jpg?updatedAt=1769124874061', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 7', year: '2025' },
+{ id: 'p-marij-8', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_1000%20copy.jpg?updatedAt=1769124874535', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 8', year: '2025' },
+{ id: 'p-marij-9', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0961%20copy.jpg?updatedAt=1769124875470', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 9', year: '2025' },
+{ id: 'p-marij-10', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0865%20copy.jpg?updatedAt=1769124876030', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 10', year: '2025' },
+{ id: 'p-marij-11', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0944%20copy.jpg?updatedAt=1769124879760', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 11', year: '2025' },
+{ id: 'p-marij-12', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_1033%20copy.jpg?updatedAt=1769124887750', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 12', year: '2025' },
+{ id: 'p-marij-13', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0642%20copy.jpg?updatedAt=1769124895576', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 13', year: '2025' },
+{ id: 'p-marij-14', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20250603_0614%20copy.jpg?updatedAt=1769124897980', category: 'portraits', subcategory: 'outdoor', title: 'Outdoor 14', year: '2025' },
+{ id: 'p-marij-15', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(4).jpg?updatedAt=1769124858904', category: 'portraits', subcategory: 'portrait', title: 'Marij 1', year: '2025' },
+{ id: 'p-marij-16', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(12).jpg?updatedAt=1769124856842', category: 'portraits', subcategory: 'portrait', title: 'Marij 2', year: '2025' },
+{ id: 'p-marij-17', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(3).jpg?updatedAt=1769124853071', category: 'portraits', subcategory: 'portrait', title: 'Marij 3', year: '2025' },
+{ id: 'p-marij-18', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(2).jpg?updatedAt=1769124852000', category: 'portraits', subcategory: 'portrait', title: 'Marij 4', year: '2025' },
+{ id: 'p-marij-19', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(1).jpg?updatedAt=1769124854805', category: 'portraits', subcategory: 'portrait', title: 'Marij 5', year: '2025' },
+{ id: 'p-marij-20', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(6).jpg?updatedAt=1769124843107', category: 'portraits', subcategory: 'portrait', title: 'Marij 6', year: '2025' },
+{ id: 'p-marij-21', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(5).jpg?updatedAt=1769124832820', category: 'portraits', subcategory: 'portrait', title: 'Marij 7', year: '2025' },
+{ id: 'p-marij-22', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/marij%20(11).jpg?updatedAt=1769124807704', category: 'portraits', subcategory: 'portrait', title: 'Marij 8', year: '2025' },
+
+
+  // ===== Laiba Outdoor / Glam Portraits =====
+
+{ id: 'p-laiba-1', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0046%20copy%20(1).jpg?updatedAt=1769126230320', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 1', year: '2024' },
+{ id: 'p-laiba-2', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0079%20copy%20(1).jpg?updatedAt=1769126232953', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 2', year: '2024' },
+{ id: 'p-laiba-3', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0083%20copy%20(1).jpg?updatedAt=1769126234766', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 3', year: '2024' },
+{ id: 'p-laiba-4', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0133%20copy.jpg?updatedAt=1769126247904', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 4', year: '2024' },
+{ id: 'p-laiba-5', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0034%20copy.jpg?updatedAt=1769126255683', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 5', year: '2024' },
+{ id: 'p-laiba-6', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0165%20copy%20(1).JPG?updatedAt=1769126274486', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 6', year: '2024' },
+{ id: 'p-laiba-7', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laiba_0046%20copy.jpg?updatedAt=1769126287173', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 7', year: '2024' },
+{ id: 'p-laiba-8', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_2%20(1).JPG?updatedAt=1769126391934', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 8', year: '2024' },
+{ id: 'p-laiba-9', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_5.jpg?updatedAt=1769126478029', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 10', year: '2024' },
+{ id: 'p-laiba-10', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_9.jpg?updatedAt=1769126543150', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 11', year: '2024' },
+{ id: 'p-laiba-11', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa%20(2).jpg?updatedAt=1769126548310', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 12', year: '2024' },
+{ id: 'p-laiba-12', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_8%20(1).JPG?updatedAt=1769126568817', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 13', year: '2024' },
+{ id: 'p-laiba-13', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_13%20(1).JPG?updatedAt=1769126571583', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 14', year: '2024' },
+{ id: 'p-laiba-14', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/laibaaaaaa_10.jpg?updatedAt=1769126595054', category: 'portraits', subcategory: 'outfit-glam', title: 'Laiba Glam 15', year: '2024' },
+
+
+  // ===== Outdoor Outfit / Glam Portraits =====
+  { id: 'p-out-1', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1050%20copy.jpg?updatedAt=1769126896578', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 1', year: '2024' },
+  { id: 'p-out-2', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1055%20copy.jpg?updatedAt=1769126895404', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 2', year: '2024' },
+  { id: 'p-out-3', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1233%20copy.jpg?updatedAt=1769126866257', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 3', year: '2024' },
+  { id: 'p-out-4', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1068%20copy.jpg?updatedAt=1769126840928', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 4', year: '2024' },
+  { id: 'p-out-5', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1063%20copy.jpg?updatedAt=1769126833117', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 5', year: '2024' },
+  { id: 'p-out-6', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1192%20copy.jpg?updatedAt=1769126819302', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 6', year: '2024' },
+  { id: 'p-out-7', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1196%20copy.jpg?updatedAt=1769126815937', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 7', year: '2024' },
+  { id: 'p-out-8', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1199%20copy.jpg?updatedAt=1769126813775', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 8', year: '2024' },
+  { id: 'p-out-9', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1191%20copy%20(2).jpg?updatedAt=1769126780410', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 9', year: '2024' },
+  { id: 'p-out-10', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1103%20copy.jpg?updatedAt=1769126800106', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 10', year: '2024' },
+  { id: 'p-out-11', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1106%20copy.jpg?updatedAt=1769126779273', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 11', year: '2024' },
+  { id: 'p-out-12', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1109%20copy.jpg?updatedAt=1769126769983', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 12', year: '2024' },
+  { id: 'p-out-13', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1095%20copy.jpg?updatedAt=1769126758788', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 13', year: '2024' },
+  { id: 'p-out-14', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/_DSC1132%20copy.jpg?updatedAt=1769126721982', category: 'portraits', subcategory: 'outfit-glam', title: 'Outdoor Glam 14', year: '2024' },
+  
+// ===== Editorial / Outdoor Portrait Series =====
+{ id: 'p-ed-1', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2410%20copy.jpg?updatedAt=1769126843562', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 1', year: '2024' },
+{ id: 'p-ed-2', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2401%20copy.jpg?updatedAt=1769126842239', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 2', year: '2024' },
+{ id: 'p-ed-3', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2413%20copy.jpg?updatedAt=1769126841597', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 3', year: '2024' },
+{ id: 'p-ed-4', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2313%20copy.jpg?updatedAt=1769126780017', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 4', year: '2024' },
+{ id: 'p-ed-5', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2316%20copy.jpg?updatedAt=1769126764246', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 5', year: '2024' },
+{ id: 'p-ed-6', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2421_copy.jpg?updatedAt=1769126373280', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 6', year: '2024' },
+{ id: 'p-ed-7', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2390_copy.jpg?updatedAt=1769126327488', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 7', year: '2024' },
+{ id: 'p-ed-8', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2399_copy.jpg?updatedAt=1769126321898', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 8', year: '2024' },
+{ id: 'p-ed-9', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2370_copy.jpg?updatedAt=1769126316374', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 9', year: '2024' },
+{ id: 'p-ed-10', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2356_copy.jpg?updatedAt=1769126315541', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 10', year: '2024' },
+{ id: 'p-ed-11', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2319_copy.jpg?updatedAt=1769126302100', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 11', year: '2024' },
+{ id: 'p-ed-12', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2381_copy.jpg?updatedAt=1769126302224', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 12', year: '2024' },
+{ id: 'p-ed-13', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2323_copy.jpg?updatedAt=1769126300955', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 13', year: '2024' },
+{ id: 'p-ed-14', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2332_copy.jpg?updatedAt=1769126295417', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 14', year: '2024' },
+{ id: 'p-ed-15', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2345_copy.jpg?updatedAt=1769126291086', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 15', year: '2024' },
+{ id: 'p-ed-16', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2349_copy.jpg?updatedAt=1769126280442', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 16', year: '2024' },
+{ id: 'p-ed-17', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/20240410_2354_copy.jpg?updatedAt=1769126263307', category: 'portraits', subcategory: 'editorial', title: 'Editorial Portrait 17', year: '2024' },
+
+  // ===== Standard Portraits =====
   { id: 'p-13a', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(13).JPG?updatedAt=1755041766662', category: 'portraits', subcategory: 'portrait', title: 'Portrait 13a', year: '2024' },
   { id: 'p-6', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(6).jpg?updatedAt=1755041766602', category: 'portraits', subcategory: 'portrait', title: 'Portrait 6', year: '2024' },
   { id: 'p-12', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(12).JPG?updatedAt=1755041766232', category: 'portraits', subcategory: 'portrait', title: 'Portrait 12', year: '2024' },
@@ -57,6 +155,7 @@ const portraitImages: ImageItem[] = [
   { id: 'p-16', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(16).JPG?updatedAt=1755041734475', category: 'portraits', subcategory: 'portrait', title: 'Portrait 16', year: '2024' },
   { id: 'p-8', url: 'https://ik.imagekit.io/2z1l6hi16/Potraits/potrait%20(8).jpg?updatedAt=1755041731548', category: 'portraits', subcategory: 'portrait', title: 'Portrait 8', year: '2024' },
 ];
+
 
 const streetImages: ImageItem[] = [
   { id: 's-8', url: 'https://ik.imagekit.io/2z1l6hi16/Street/Street%20(8).jpg?updatedAt=1755041799679', category: 'street', subcategory: 'street', title: 'Street 8', year: '2024' },
