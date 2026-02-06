@@ -1,21 +1,23 @@
 "use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { MessageCircle, Send, Mail } from "lucide-react";
 import emailjs from "@emailjs/browser";
 
+/* =====================================================
+   SIMPLE CLASS MERGE
+===================================================== */
 const cn = (...c: string[]) => c.filter(Boolean).join(" ");
 
-/* =========================
-   YOUR NUMBER (digits only)
-========================= */
-const YOUR_PHONE = "13479358153";
+/* =====================================================
+   🔥 YOUR NUMBER (digits only for links)
+===================================================== */
+const YOUR_PHONE = "13479358153"; // 3479358153 with country code
 
 
 
 /* =====================================================
-   BACKGROUND
+   BACKGROUND SHAPES
 ===================================================== */
 function ElegantShape({
   className,
@@ -31,7 +33,11 @@ function ElegantShape({
       animate={{ opacity: 1, y: 0, rotate }}
       transition={{ duration: 2.4, delay }}
       className={cn("absolute rounded-full blur-3xl", className)}
-      style={{ width, height, background: `linear-gradient(to right, ${gradient})` }}
+      style={{
+        width,
+        height,
+        background: `linear-gradient(to right, ${gradient})`,
+      }}
     />
   );
 }
@@ -49,7 +55,7 @@ function GeometricBackground() {
 
 
 /* =====================================================
-   PROFILE CARD
+   GLASS PROFILE CARD
 ===================================================== */
 function GlassProfileCard() {
   return (
@@ -66,6 +72,11 @@ function GlassProfileCard() {
 
         <h3 className="text-xl font-semibold">Inderpreet Singh</h3>
         <p className="text-white/70 text-sm mb-2">Photographer</p>
+
+        <div className="flex items-center gap-2 text-green-400 text-sm">
+          <span className="animate-ping h-2 w-2 rounded-full bg-green-400"></span>
+          Available
+        </div>
 
         <p className="text-white/60 text-sm mt-2">+1 347-935-8153</p>
         <p className="text-white/60 text-sm">singhinderpreet286@gmail.com</p>
@@ -96,28 +107,16 @@ function ContactForm() {
   const update = (e: any) =>
     setData({ ...data, [e.target.name]: e.target.value });
 
-
-
-  /* =========================
-     ✅ REQUIRED VALIDATION
-  ========================= */
-  const valid = () =>
-    data.name.trim() &&
-    data.phone.trim() &&
-    data.email.trim() &&
-    data.message.trim();
+  const valid = () => data.name && data.phone && data.message;
 
   const buildMessage = () =>
-    `Name: ${data.name}
-Phone: ${data.phone}
-Email: ${data.email}
-Message: ${data.message}`;
+    `Name: ${data.name}\nPhone: ${data.phone}\nEmail: ${data.email}\nMessage: ${data.message}`;
 
 
 
-  /* ===== EMAIL ===== */
+  /* ===== EMAILJS ===== */
   const sendEmail = async () => {
-    if (!valid()) return alert("Please fill Name, Phone, Email and Message");
+    if (!valid()) return alert("Name, Phone & Message are required");
 
     setLoading(true);
 
@@ -142,8 +141,6 @@ Message: ${data.message}`;
 
   /* ===== WHATSAPP ===== */
   const openWhatsApp = () => {
-    if (!valid()) return alert("Please fill all fields first");
-
     window.open(
       `https://wa.me/${YOUR_PHONE}?text=${encodeURIComponent(buildMessage())}`,
       "_blank"
@@ -152,10 +149,8 @@ Message: ${data.message}`;
 
 
 
-  /* ===== iMESSAGE ===== */
+  /* ===== iMESSAGE / SMS ===== */
   const openSMS = () => {
-    if (!valid()) return alert("Please fill all fields first");
-
     window.location.href = `sms:${YOUR_PHONE}?body=${encodeURIComponent(buildMessage())}`;
   };
 
@@ -170,22 +165,11 @@ Message: ${data.message}`;
       animate={{ opacity: 1, y: 0 }}
       className="max-w-2xl mx-auto bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-8 space-y-5 shadow-2xl"
     >
-      <input required name="name" placeholder="Your Name *" value={data.name} onChange={update} className={inputStyle} />
-
-      <input required name="phone" placeholder="Your Phone *" value={data.phone} onChange={update} className={inputStyle} />
-
-      <input
-        required
-        type="email"
-        name="email"
-        placeholder="Your Email *"
-        value={data.email}
-        onChange={update}
-        className={inputStyle}
-      />
+      <input name="name" placeholder="Your Name *" value={data.name} onChange={update} className={inputStyle} />
+      <input name="phone" placeholder="Your Phone *" value={data.phone} onChange={update} className={inputStyle} />
+      <input name="email" placeholder="Your Email" value={data.email} onChange={update} className={inputStyle} />
 
       <textarea
-        required
         name="message"
         rows={5}
         placeholder="Your Message *"
@@ -205,7 +189,11 @@ Message: ${data.message}`;
           <Send size={18} /> iMessage
         </button>
 
-        <button onClick={sendEmail} disabled={loading} className={cn(btn, "bg-white text-black")}>
+        <button
+          onClick={sendEmail}
+          disabled={loading}
+          className={cn(btn, "bg-white text-black")}
+        >
           <Mail size={18} /> {loading ? "Sending..." : "Email"}
         </button>
       </div>
