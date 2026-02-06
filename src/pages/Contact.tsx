@@ -2,285 +2,236 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Loader2 } from "lucide-react";
+import { MessageCircle, Send, Mail } from "lucide-react";
 import emailjs from "@emailjs/browser";
-import { cn } from "@/lib/utils";
+
+const cn = (...c: string[]) => c.filter(Boolean).join(" ");
 
 /* =========================
-   Geometric Background
+   YOUR NUMBER (digits only)
 ========================= */
+const YOUR_PHONE = "13479358153";
+
+
+
+/* =====================================================
+   BACKGROUND
+===================================================== */
 function ElegantShape({
   className,
   delay = 0,
   width = 400,
   height = 100,
   rotate = 0,
-  gradient = "from-white/[0.08]",
-}: {
-  className?: string;
-  delay?: number;
-  width?: number;
-  height?: number;
-  rotate?: number;
-  gradient?: string;
-}) {
+  gradient = "from-white/10",
+}: any) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -150, rotate: rotate - 15 }}
+      initial={{ opacity: 0, y: -150, rotate: rotate - 10 }}
       animate={{ opacity: 1, y: 0, rotate }}
-      transition={{
-        duration: 2.4,
-        delay,
-        ease: [0.23, 0.86, 0.39, 0.96],
-        opacity: { duration: 1.2 },
-      }}
-      className={cn("absolute", className)}
-    >
-      <motion.div
-        animate={{ y: [0, 15, 0] }}
-        transition={{
-          duration: 12,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "easeInOut",
-        }}
-        style={{ width, height }}
-        className="relative"
-      >
-        <div
-          className={cn(
-            "absolute inset-0 rounded-full",
-            "bg-gradient-to-r to-transparent",
-            gradient,
-            "backdrop-blur-[2px] border-2 border-white/[0.15]",
-            "shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]",
-            "after:absolute after:inset-0 after:rounded-full",
-            "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]"
-          )}
-        />
-      </motion.div>
-    </motion.div>
+      transition={{ duration: 2.4, delay }}
+      className={cn("absolute rounded-full blur-3xl", className)}
+      style={{ width, height, background: `linear-gradient(to right, ${gradient})` }}
+    />
   );
 }
 
 function GeometricBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[#030303]" />
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-rose-500/[0.05] blur-3xl" />
-
-      <ElegantShape
-        delay={0.3}
-        width={600}
-        height={140}
-        rotate={12}
-        gradient="from-indigo-500/[0.15]"
-        className="left-[-10%] md:left-[-5%] top-[15%] md:top-[20%]"
-      />
-      <ElegantShape
-        delay={0.5}
-        width={500}
-        height={120}
-        rotate={-15}
-        gradient="from-rose-500/[0.15]"
-        className="right-[-5%] md:right-[0%] top-[70%] md:top-[75%]"
-      />
-      <ElegantShape
-        delay={0.4}
-        width={300}
-        height={80}
-        rotate={-8}
-        gradient="from-violet-500/[0.15]"
-        className="left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]"
-      />
-      <ElegantShape
-        delay={0.6}
-        width={200}
-        height={60}
-        rotate={20}
-        gradient="from-amber-500/[0.15]"
-        className="right-[15%] md:right-[20%] top-[10%] md:top-[15%]"
-      />
-      <ElegantShape
-        delay={0.7}
-        width={150}
-        height={40}
-        rotate={-25}
-        gradient="from-cyan-500/[0.15]"
-        className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
-      />
-
-      <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-[#030303]/80 pointer-events-none" />
+    <div className="absolute inset-0 overflow-hidden bg-[#030303]">
+      <ElegantShape width={600} height={140} rotate={12} className="left-[-10%] top-[20%] bg-indigo-500/20" />
+      <ElegantShape width={500} height={120} rotate={-15} className="right-[-5%] top-[70%] bg-rose-500/20" />
+      <ElegantShape width={300} height={100} rotate={8} className="left-[20%] bottom-[10%] bg-violet-500/20" />
     </div>
   );
 }
 
-/* =========================
-   Contact Page
-========================= */
-const Contact = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const validateForm = (): boolean => {
-    const newErrors: { name?: string; email?: string; message?: string } = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      newErrors.email = "Please enter a valid email address";
-    if (!formData.message.trim()) newErrors.message = "Message is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+function GlassProfileCard() {
+  return (
+    <motion.div
+      animate={{ y: [0, -8, 0] }}
+      transition={{ repeat: Infinity, duration: 4 }}
+      className="mx-auto w-80 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl p-6 mb-12 text-white"
+    >
+      <div className="flex flex-col items-center">
+        <img
+          src="https://ik.imagekit.io/fpxbgsota/memoji-alex.png"
+          className="h-28 w-28 rounded-full border-2 border-white/30 mb-4"
+        />
 
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
+        <h3 className="text-xl font-semibold">Inderpreet Singh</h3>
+        <p className="text-white/70 text-sm mb-2">Photographer</p>
+
+        <p className="text-white/60 text-sm mt-2">+1 347-935-8153</p>
+        <p className="text-white/60 text-sm">singhinderpreet286@gmail.com</p>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
+/* =====================================================
+   CONTACT FORM
+===================================================== */
+function ContactForm() {
+  const [data, setData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+
+  const inputStyle =
+    "w-full rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 px-5 py-4 text-white placeholder-white/50 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition";
+
+  const update = (e: any) =>
+    setData({ ...data, [e.target.name]: e.target.value });
+
+
+
+  /* =========================
+     ✅ REQUIRED VALIDATION
+  ========================= */
+  const valid = () =>
+    data.name.trim() &&
+    data.phone.trim() &&
+    data.email.trim() &&
+    data.message.trim();
+
+  const buildMessage = () =>
+    `Name: ${data.name}
+Phone: ${data.phone}
+Email: ${data.email}
+Message: ${data.message}`;
+
+
+
+  /* ===== EMAIL ===== */
+  const sendEmail = async () => {
+    if (!valid()) return alert("Please fill Name, Phone, Email and Message");
+
+    setLoading(true);
+
     try {
       await emailjs.send(
         "service_imr7m0a",
         "template_5o36pq2",
-        { name: formData.name, email: formData.email, message: formData.message },
+        data,
         "Yn4Sc73fc1UopQy0-"
       );
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", message: "" });
-    } catch (err) {
-      console.error("Email send error:", err);
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
+
+      setSuccess("Message sent successfully ✨");
+      setData({ name: "", phone: "", email: "", message: "" });
+    } catch {
+      alert("Email failed. Check EmailJS keys.");
     }
+
+    setLoading(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof typeof errors]) setErrors((prev) => ({ ...prev, [name]: undefined }));
+
+
+  /* ===== WHATSAPP ===== */
+  const openWhatsApp = () => {
+    if (!valid()) return alert("Please fill all fields first");
+
+    window.open(
+      `https://wa.me/${YOUR_PHONE}?text=${encodeURIComponent(buildMessage())}`,
+      "_blank"
+    );
   };
+
+
+
+  /* ===== iMESSAGE ===== */
+  const openSMS = () => {
+    if (!valid()) return alert("Please fill all fields first");
+
+    window.location.href = `sms:${YOUR_PHONE}?body=${encodeURIComponent(buildMessage())}`;
+  };
+
+
+
+  const btn =
+    "flex items-center justify-center gap-2 rounded-xl py-3 font-medium transition hover:scale-105 active:scale-95";
 
   return (
-    <section className="relative min-h-screen pt-32 pb-24 px-4 overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-2xl mx-auto bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-8 space-y-5 shadow-2xl"
+    >
+      <input required name="name" placeholder="Your Name *" value={data.name} onChange={update} className={inputStyle} />
+
+      <input required name="phone" placeholder="Your Phone *" value={data.phone} onChange={update} className={inputStyle} />
+
+      <input
+        required
+        type="email"
+        name="email"
+        placeholder="Your Email *"
+        value={data.email}
+        onChange={update}
+        className={inputStyle}
+      />
+
+      <textarea
+        required
+        name="message"
+        rows={5}
+        placeholder="Your Message *"
+        value={data.message}
+        onChange={update}
+        className={inputStyle}
+      />
+
+      {success && <p className="text-green-400 text-sm">{success}</p>}
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <button onClick={openWhatsApp} className={cn(btn, "bg-green-500 text-white")}>
+          <MessageCircle size={18} /> WhatsApp
+        </button>
+
+        <button onClick={openSMS} className={cn(btn, "bg-blue-500 text-white")}>
+          <Send size={18} /> iMessage
+        </button>
+
+        <button onClick={sendEmail} disabled={loading} className={cn(btn, "bg-white text-black")}>
+          <Mail size={18} /> {loading ? "Sending..." : "Email"}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
+/* =====================================================
+   MAIN PAGE
+===================================================== */
+export default function ContactPage() {
+  return (
+    <section className="relative min-h-screen pt-32 pb-24 px-4 overflow-hidden text-white">
       <GeometricBackground />
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-3xl mx-auto text-center mb-16"
-        >
-          <h1 className="text-5xl md:text-6xl font-light mb-6">
-            Get in{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300">
-              Touch
-            </span>
-          </h1>
-          <p className="text-gray-400">
-            Let’s create something extraordinary together. Whether you have a
-            specific project in mind or just want to explore possibilities, I’m
-            here to help.
-          </p>
-        </motion.div>
+      <div className="relative z-10 text-center max-w-7xl mx-auto">
+        <h1 className="text-5xl md:text-6xl font-light mb-12">
+          Get in <span className="text-indigo-300">Touch</span>
+        </h1>
 
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          onSubmit={handleSubmit}
-          className="max-w-2xl mx-auto space-y-8"
-        >
-          <div className="space-y-6">
-            <div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your Name"
-                  className={cn(
-                    "w-full bg-white/5 border rounded-lg px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all",
-                    errors.name
-                      ? "border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-white/20 focus:ring-white/20"
-                  )}
-                />
-              </motion.div>
-              {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name}</p>}
-            </div>
+        <GlassProfileCard />
 
-            <div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Your Email"
-                  className={cn(
-                    "w-full bg-white/5 border rounded-lg px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all",
-                    errors.email
-                      ? "border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-white/20 focus:ring-white/20"
-                  )}
-                />
-              </motion.div>
-              {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
-            </div>
-
-            <div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Your Message"
-                  rows={6}
-                  className={cn(
-                    "w-full bg-white/5 border rounded-lg px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all resize-none",
-                    errors.message
-                      ? "border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-white/20 focus:ring-white/20"
-                  )}
-                />
-              </motion.div>
-              {errors.message && <p className="mt-2 text-sm text-red-400">{errors.message}</p>}
-            </div>
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
-            disabled={isSubmitting}
-            className={cn(
-              "w-full py-4 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors",
-              isSubmitting
-                ? "bg-white/50 cursor-not-allowed"
-                : "bg-white text-black hover:bg-gray-100"
-            )}
-          >
-            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
-          </motion.button>
-
-          {submitStatus === "success" && (
-            <p className="text-center text-green-400">Message sent successfully</p>
-          )}
-          {submitStatus === "error" && (
-            <p className="text-center text-red-400">
-              Error sending message. Try again later.
-            </p>
-          )}
-        </motion.form>
+        <ContactForm />
       </div>
     </section>
   );
-};
-
-export default Contact;
+}
